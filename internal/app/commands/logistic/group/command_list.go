@@ -7,19 +7,22 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *LogisticGroupCommander) List(inputMessage *tgbotapi.Message) {
+func (c *GroupCommander) List(inputMessage *tgbotapi.Message) {
 	outputMsgText := "Here all the products: \n\n"
 
-	products := c.groupService.List()
+	products, err := c.groupService.List(uint64(0), uint64(5))
+	if err != nil {
+		return
+	}
 	for _, p := range products {
-		outputMsgText += p.Title
+		outputMsgText += p.String()
 		outputMsgText += "\n"
 	}
 
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, outputMsgText)
 
 	serializedData, _ := json.Marshal(CallbackListData{
-		Offset: 21,
+		Offset: 5,
 	})
 
 	callbackPath := path.CallbackPath{

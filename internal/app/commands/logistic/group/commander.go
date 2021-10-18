@@ -8,32 +8,30 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
 )
 
-type LogisticGroupCommander struct {
+type GroupCommander struct {
 	bot          *tgbotapi.BotAPI
-	groupService *group.Service
+	groupService group.GroupService
 }
 
-func NewLogisticGroupCommander(
-	bot *tgbotapi.BotAPI,
-) *LogisticGroupCommander {
-	groupService := group.NewService()
+func NewGroupCommander(bot *tgbotapi.BotAPI) *GroupCommander {
+	groupService := group.NewDummyGroupService()
 
-	return &LogisticGroupCommander{
+	return &GroupCommander{
 		bot:          bot,
 		groupService: groupService,
 	}
 }
 
-func (c *LogisticGroupCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *GroupCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.CallbackName {
 	case "list":
 		c.CallbackList(callback, callbackPath)
 	default:
-		log.Printf("LogisticGroupCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
+		log.Printf("GroupCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
 	}
 }
 
-func (c *LogisticGroupCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *GroupCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.CommandName {
 	case "help":
 		c.Help(msg)

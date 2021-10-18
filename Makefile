@@ -5,3 +5,7 @@ run:
 .PHONY: build
 build:
 	go build -o bot cmd/bot/main.go
+
+tests:
+	go test -timeout 30s github.com/ozonmp/omp-bot/internal/service/logistic/group
+

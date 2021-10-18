@@ -7,7 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *LogisticGroupCommander) Get(inputMessage *tgbotapi.Message) {
+func (c *GroupCommander) Get(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
 
 	idx, err := strconv.Atoi(args)
@@ -16,15 +16,15 @@ func (c *LogisticGroupCommander) Get(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	product, err := c.groupService.Get(idx)
+	group, err := c.groupService.Describe(uint64(idx))
 	if err != nil {
-		log.Printf("fail to get product with idx %d: %v", idx, err)
+		log.Printf("fail to get group with idx %d: %v", idx, err)
 		return
 	}
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		product.Title,
+		group.Title,
 	)
 
 	c.bot.Send(msg)
