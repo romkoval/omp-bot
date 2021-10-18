@@ -52,7 +52,6 @@ func (s *GroupStorage) Remove(groupID uint64) error {
 	}
 	copy(s.groupEntities[ind:], s.groupEntities[ind+1:])
 	s.groupEntities = s.groupEntities[0 : size-1]
-	log.Printf("deleted item at %d, %#v", ind, s.groupEntities)
 	return nil
 }
 
@@ -83,7 +82,7 @@ func (s *GroupStorage) getIndex(groupID uint64) (int, error) {
 	ind := sort.Search(size, func(ind int) bool {
 		return s.groupEntities[ind].Id >= groupID
 	})
-	log.Printf("found index %d by id:%d, len:%d\n", ind, groupID, size)
+	log.Printf("found index %d by id:%d, len:%d", ind, groupID, size)
 	if ind == size || groupID != s.groupEntities[ind].Id {
 		return 0, fmt.Errorf("group not found by id: %d", groupID)
 	}
