@@ -8,6 +8,21 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
 )
 
+type GroupCommandHandler interface {
+	Help(inputMsg *tgbotapi.Message) error
+	Get(inputMsg *tgbotapi.Message) error
+	List(inputMsg *tgbotapi.Message) error
+	Del(inputMsg *tgbotapi.Message) error
+
+	Add(inputMsg *tgbotapi.Message) error
+	Edit(inputMsg *tgbotapi.Message) error
+	Default(inputMsg *tgbotapi.Message) error
+}
+
+type GroupCallbackHandler interface {
+	CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+}
+
 type GroupCommander struct {
 	bot          *tgbotapi.BotAPI
 	groupService group.GroupService
