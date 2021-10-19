@@ -43,6 +43,8 @@ func (c *GroupCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.C
 		c.Del(msg)
 	case "new":
 		c.Add(msg)
+	case "edit":
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}
