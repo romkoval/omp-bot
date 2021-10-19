@@ -10,13 +10,13 @@ import (
 	"github.com/ozonmp/omp-bot/internal/model/logistic"
 )
 
-func (c *GroupCommander) Edit(inputMessage *tgbotapi.Message) {
+func (c *GroupCommander) Edit(inputMessage *tgbotapi.Message) error {
 	args := inputMessage.CommandArguments()
 
 	var answ string
 
 	if groupId, title, err := parseEditGroupArgs(args); err != nil {
-		answ = "Please use group ID and title as an arguments, e.g. /edit__logistic__group 1 Updated Group Title"
+		answ = "Please use format: /edit__logistic__group groupId Updated Group Title"
 	} else {
 		err := c.groupService.Update(groupId, logistic.Group{Title: title})
 
@@ -31,7 +31,8 @@ func (c *GroupCommander) Edit(inputMessage *tgbotapi.Message) {
 		answ,
 	)
 
-	c.bot.Send(msg)
+	_, err := c.bot.Send(msg)
+	return err
 }
 
 func parseEditGroupArgs(args string) (groupId uint64, title string, err error) {

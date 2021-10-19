@@ -4,7 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *GroupCommander) Help(inputMessage *tgbotapi.Message) {
+func (c *GroupCommander) Help(inputMessage *tgbotapi.Message) error {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
 		"/help__logistic__group - help\n"+
 			"/get__logistic__group — get a entity\n"+
@@ -14,5 +14,6 @@ func (c *GroupCommander) Help(inputMessage *tgbotapi.Message) {
 			"/edit__logistic__group — edit an entity\n",
 	)
 
-	c.bot.Send(msg)
+	_, err := c.bot.Send(msg)
+	return err
 }

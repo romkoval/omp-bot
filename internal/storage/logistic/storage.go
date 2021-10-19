@@ -16,13 +16,14 @@ type GroupStorage struct {
 
 func NewStorage() *GroupStorage {
 	return &GroupStorage{
-		groupIdSeq: 5,
+		groupIdSeq: 6,
 		groupEntities: []logistic.Group{
 			{Id: 1, Title: "one"},
 			{Id: 2, Title: "two"},
 			{Id: 3, Title: "three"},
 			{Id: 4, Title: "four"},
 			{Id: 5, Title: "five"},
+			{Id: 6, Title: "six"},
 		},
 	}
 }

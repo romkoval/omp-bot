@@ -32,20 +32,24 @@ func (c *GroupCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callba
 }
 
 func (c *GroupCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+	var err error
 	switch commandPath.CommandName {
 	case "help":
-		c.Help(msg)
+		err = c.Help(msg)
 	case "list":
-		c.List(msg)
+		err = c.List(msg)
 	case "get":
-		c.Get(msg)
+		err = c.Get(msg)
 	case "delete":
-		c.Del(msg)
+		err = c.Del(msg)
 	case "new":
-		c.Add(msg)
+		err = c.Add(msg)
 	case "edit":
-		c.Edit(msg)
+		err = c.Edit(msg)
 	default:
-		c.Default(msg)
+		err = c.Default(msg)
+	}
+	if err != nil {
+		log.Printf("failed to handle command with error:%s\n", err)
 	}
 }

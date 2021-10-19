@@ -7,7 +7,7 @@ import (
 	"github.com/ozonmp/omp-bot/internal/model/logistic"
 )
 
-func (c *GroupCommander) Add(inputMessage *tgbotapi.Message) {
+func (c *GroupCommander) Add(inputMessage *tgbotapi.Message) error {
 	args := inputMessage.CommandArguments()
 
 	var answ string
@@ -28,5 +28,6 @@ func (c *GroupCommander) Add(inputMessage *tgbotapi.Message) {
 		answ,
 	)
 
-	c.bot.Send(msg)
+	_, err := c.bot.Send(msg)
+	return err
 }
