@@ -18,7 +18,7 @@ type LogisticCommander struct {
 	groupCommander Commander
 }
 
-func NewLogisticCommander(bot *tgbotapi.BotAPI) *LogisticCommander {
+func NewLogisticCommander(bot *tgbotapi.BotAPI) Commander {
 	return &LogisticCommander{
 		bot:            bot,
 		groupCommander: group.NewGroupCommander(bot),

@@ -20,7 +20,7 @@ type GroupCommandHandler interface {
 }
 
 type GroupCallbackHandler interface {
-	CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+	CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) error
 }
 
 type GroupCommander struct {
@@ -38,11 +38,15 @@ func NewGroupCommander(bot *tgbotapi.BotAPI) *GroupCommander {
 }
 
 func (c *GroupCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+	var err error
 	switch callbackPath.CallbackName {
 	case "list":
-		c.CallbackList(callback, callbackPath)
+		err = c.CallbackList(callback, callbackPath)
 	default:
 		log.Printf("GroupCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
+	}
+	if err != nil {
+		log.Printf("failed to handle command with error:%s\n", err)
 	}
 }
 
