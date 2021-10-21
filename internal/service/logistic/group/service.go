@@ -5,7 +5,7 @@ import (
 	storage "github.com/ozonmp/omp-bot/internal/storage/logistic"
 )
 
-type GroupService interface {
+type Service interface {
 	Describe(groupID uint64) (*logistic.Group, error)
 	List(cursor uint64, limit uint64) ([]logistic.Group, error)
 	Create(logistic.Group) (uint64, error)

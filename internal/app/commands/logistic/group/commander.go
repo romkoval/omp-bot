@@ -8,7 +8,7 @@ import (
 	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
 )
 
-type GroupCommandHandler interface {
+type CommandHandler interface {
 	Help(inputMsg *tgbotapi.Message) error
 	Get(inputMsg *tgbotapi.Message) error
 	List(inputMsg *tgbotapi.Message) error
@@ -25,7 +25,7 @@ type GroupCallbackHandler interface {
 
 type GroupCommander struct {
 	bot          *tgbotapi.BotAPI
-	groupService group.GroupService
+	groupService group.Service
 }
 
 func NewGroupCommander(bot *tgbotapi.BotAPI) *GroupCommander {
