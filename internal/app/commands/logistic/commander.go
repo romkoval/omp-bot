@@ -1,6 +1,7 @@
 package logistic
 
 import (
+	"context"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -9,8 +10,8 @@ import (
 )
 
 type Commander interface {
-	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(message *tgbotapi.Message, commandPath path.CommandPath)
+	HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+	HandleCommand(ctx context.Context, message *tgbotapi.Message, commandPath path.CommandPath)
 }
 
 type LogisticCommander struct {
@@ -25,19 +26,19 @@ func NewLogisticCommander(bot *tgbotapi.BotAPI) Commander {
 	}
 }
 
-func (c *LogisticCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *LogisticCommander) HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	switch callbackPath.Subdomain {
 	case "group":
-		c.groupCommander.HandleCallback(callback, callbackPath)
+		c.groupCommander.HandleCallback(ctx, callback, callbackPath)
 	default:
 		log.Printf("LogisticCommander.HandleCallback: unknown group - %s", callbackPath.Subdomain)
 	}
 }
 
-func (c *LogisticCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *LogisticCommander) HandleCommand(ctx context.Context, msg *tgbotapi.Message, commandPath path.CommandPath) {
 	switch commandPath.Subdomain {
 	case "group":
-		c.groupCommander.HandleCommand(msg, commandPath)
+		c.groupCommander.HandleCommand(ctx, msg, commandPath)
 	default:
 		log.Printf("LogisticCommander.HandleCommand: unknown group - %s", commandPath.Subdomain)
 	}

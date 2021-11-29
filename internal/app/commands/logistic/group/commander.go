@@ -1,6 +1,7 @@
 package group
 
 import (
+	"context"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -9,18 +10,18 @@ import (
 )
 
 type CommandHandler interface {
-	Help(inputMsg *tgbotapi.Message) error
-	Get(inputMsg *tgbotapi.Message) error
-	List(inputMsg *tgbotapi.Message) error
-	Del(inputMsg *tgbotapi.Message) error
+	Help(ctx context.Context, inputMsg *tgbotapi.Message) error
+	Get(ctx context.Context, inputMsg *tgbotapi.Message) error
+	List(ctx context.Context, inputMsg *tgbotapi.Message) error
+	Del(ctx context.Context, inputMsg *tgbotapi.Message) error
 
-	Add(inputMsg *tgbotapi.Message) error
-	Edit(inputMsg *tgbotapi.Message) error
-	Default(inputMsg *tgbotapi.Message) error
+	Add(ctx context.Context, inputMsg *tgbotapi.Message) error
+	Edit(ctx context.Context, inputMsg *tgbotapi.Message) error
+	Default(ctx context.Context, inputMsg *tgbotapi.Message) error
 }
 
 type GroupCallbackHandler interface {
-	CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) error
+	CallbackList(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) error
 }
 
 type GroupCommander struct {
@@ -37,11 +38,11 @@ func NewGroupCommander(bot *tgbotapi.BotAPI) *GroupCommander {
 	}
 }
 
-func (c *GroupCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
+func (c *GroupCommander) HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
 	var err error
 	switch callbackPath.CallbackName {
 	case "list":
-		err = c.CallbackList(callback, callbackPath)
+		err = c.CallbackList(ctx, callback, callbackPath)
 	default:
 		log.Printf("GroupCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
 	}
@@ -50,23 +51,23 @@ func (c *GroupCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callba
 	}
 }
 
-func (c *GroupCommander) HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath) {
+func (c *GroupCommander) HandleCommand(ctx context.Context, msg *tgbotapi.Message, commandPath path.CommandPath) {
 	var err error
 	switch commandPath.CommandName {
 	case "help":
-		err = c.Help(msg)
+		err = c.Help(ctx, msg)
 	case "list":
-		err = c.List(msg)
+		err = c.List(ctx, msg)
 	case "get":
-		err = c.Get(msg)
+		err = c.Get(ctx, msg)
 	case "delete":
-		err = c.Del(msg)
+		err = c.Del(ctx, msg)
 	case "new":
-		err = c.Add(msg)
+		err = c.Add(ctx, msg)
 	case "edit":
-		err = c.Edit(msg)
+		err = c.Edit(ctx, msg)
 	default:
-		err = c.Default(msg)
+		err = c.Default(ctx, msg)
 	}
 	if err != nil {
 		log.Printf("failed to handle command with error:%s\n", err)

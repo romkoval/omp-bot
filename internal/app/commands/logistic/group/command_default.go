@@ -1,12 +1,13 @@
 package group
 
 import (
+	"context"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *GroupCommander) Default(inputMessage *tgbotapi.Message) error {
+func (c *GroupCommander) Default(ctx context.Context, inputMessage *tgbotapi.Message) error {
 	log.Printf("[%s] %s", inputMessage.From.UserName, inputMessage.Text)
 
 	msg := tgbotapi.NewMessage(

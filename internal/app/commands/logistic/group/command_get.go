@@ -1,6 +1,7 @@
 package group
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -8,7 +9,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *GroupCommander) Get(inputMessage *tgbotapi.Message) error {
+func (c *GroupCommander) Get(ctx context.Context, inputMessage *tgbotapi.Message) error {
 	args := inputMessage.CommandArguments()
 
 	var answ string

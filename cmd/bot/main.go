@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/ozonmp/omp-bot/internal/botsrv"
 	"github.com/ozonmp/omp-bot/internal/config"
+	"github.com/ozonmp/omp-bot/internal/logger"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 
 	token := os.Getenv("TOKEN")
 	if err := config.ReadConfigYML("config.yml"); err != nil {
-		log.Printf("Failed init configuration: %s", err)
+		logger.ErrorKV(ctx, "Failed init configuration", "err", err)
 	}
 	cfg := config.GetConfigInstance()
 
@@ -32,10 +33,10 @@ func main() {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	select {
-	case <-sigs:
-		// logger.InfoKV(ctx, "signal.Notify", "sig", fmt.Sprintf("%v", v))
+	case v := <-sigs:
+		logger.InfoKV(ctx, "cancel by signal.Notify", "sig", fmt.Sprintf("%v", v))
 		cancel()
 	case <-ctx.Done():
-		// logger.InfoKV(ctx, "ctx.Done", "done", fmt.Sprintf("%v", done))
+		logger.InfoKV(ctx, "ctx.Done")
 	}
 }

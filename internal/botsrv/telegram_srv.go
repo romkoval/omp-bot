@@ -46,7 +46,7 @@ func (b *tlgbotSrv) Start(ctx context.Context) error {
 	go func() {
 		select {
 		case update := <-updates:
-			router.HandleUpdate(update)
+			router.HandleUpdate(ctx, update)
 		case <-ctx.Done():
 			return
 		}

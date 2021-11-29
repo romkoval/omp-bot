@@ -1,21 +1,22 @@
 package group
 
 import (
+	"context"
 	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/model/logistic"
 )
 
-func (c *GroupCommander) Add(inputMessage *tgbotapi.Message) error {
+func (c *GroupCommander) Add(ctx context.Context, inputMessage *tgbotapi.Message) error {
 	args := inputMessage.CommandArguments()
 
 	var answ string
 
 	if len(args) == 0 {
-		answ = "Please use group title as an argument, e.g. /new__logistic__group New Group Title"
+		answ = "Please use group name as an argument, e.g. /new__logistic__group New Group Title"
 	} else {
-		newid, err := c.groupService.Create(logistic.Group{Title: args})
+		newid, err := c.groupService.Create(logistic.Group{Name: args})
 
 		if err == nil {
 			answ = fmt.Sprintf("Group successfuly created with id: %d", newid)

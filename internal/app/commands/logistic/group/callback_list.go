@@ -1,6 +1,7 @@
 package group
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 
@@ -12,7 +13,7 @@ type CallbackListData struct {
 	Offset uint64 `json:"offset"`
 }
 
-func (c *GroupCommander) CallbackList(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) error {
+func (c *GroupCommander) CallbackList(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) error {
 	parsedData := CallbackListData{}
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
 	if err != nil {
@@ -24,5 +25,5 @@ func (c *GroupCommander) CallbackList(callback *tgbotapi.CallbackQuery, callback
 		c.bot.Send(msg)
 		return err
 	}
-	return c.ListOffset(callback.Message, parsedData.Offset)
+	return c.ListOffset(ctx, callback.Message, parsedData.Offset)
 }

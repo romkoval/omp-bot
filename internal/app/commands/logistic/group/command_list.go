@@ -1,6 +1,7 @@
 package group
 
 import (
+	"context"
 	"encoding/json"
 	"math"
 
@@ -8,11 +9,11 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
-func (c *GroupCommander) List(inputMessage *tgbotapi.Message) error {
-	return c.ListOffset(inputMessage, uint64(0))
+func (c *GroupCommander) List(ctx context.Context, inputMessage *tgbotapi.Message) error {
+	return c.ListOffset(ctx, inputMessage, uint64(0))
 }
 
-func (c *GroupCommander) ListOffset(inputMessage *tgbotapi.Message, cursor uint64) error {
+func (c *GroupCommander) ListOffset(ctx context.Context, inputMessage *tgbotapi.Message, cursor uint64) error {
 	outputMsgText := "Here all the groups: \n\n"
 	nextOffset := 5
 

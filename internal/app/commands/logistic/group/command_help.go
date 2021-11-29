@@ -1,10 +1,12 @@
 package group
 
 import (
+	"context"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (c *GroupCommander) Help(inputMessage *tgbotapi.Message) error {
+func (c *GroupCommander) Help(ctx context.Context, inputMessage *tgbotapi.Message) error {
 	msg := tgbotapi.NewMessage(inputMessage.Chat.ID,
 		"/help__logistic__group - help\n"+
 			"/get__logistic__group — get a entity\n"+

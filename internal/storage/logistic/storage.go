@@ -18,12 +18,12 @@ func NewStorage() *GroupStorage {
 	return &GroupStorage{
 		groupIdSeq: 6,
 		groupEntities: []logistic.Group{
-			{Id: 1, Title: "one"},
-			{Id: 2, Title: "two"},
-			{Id: 3, Title: "three"},
-			{Id: 4, Title: "four"},
-			{Id: 5, Title: "five"},
-			{Id: 6, Title: "six"},
+			{Id: 1, Name: "one"},
+			{Id: 2, Name: "two"},
+			{Id: 3, Name: "three"},
+			{Id: 4, Name: "four"},
+			{Id: 5, Name: "five"},
+			{Id: 6, Name: "six"},
 		},
 	}
 }

@@ -1,17 +1,17 @@
 package router
 
 import (
+	"context"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
 	"github.com/ozonmp/omp-bot/internal/app/commands/logistic"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 )
 
 type Commander interface {
-	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
-	HandleCommand(callback *tgbotapi.Message, commandPath path.CommandPath)
+	HandleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+	HandleCommand(ctx context.Context, callback *tgbotapi.Message, commandPath path.CommandPath)
 }
 
 type Router struct {
@@ -55,7 +55,7 @@ func NewRouter(
 		// bot
 		bot: bot,
 		// demoCommander
-		demoCommander: demo.NewDemoCommander(bot),
+		// demoCommander: demo.NewDemoCommander(bot),
 		// user
 		// access
 		// buy
@@ -85,7 +85,7 @@ func NewRouter(
 	}
 }
 
-func (c *Router) HandleUpdate(update tgbotapi.Update) {
+func (c *Router) HandleUpdate(ctx context.Context, update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
 			log.Printf("recovered from panic: %v", panicValue)
@@ -94,13 +94,13 @@ func (c *Router) HandleUpdate(update tgbotapi.Update) {
 
 	switch {
 	case update.CallbackQuery != nil:
-		c.handleCallback(update.CallbackQuery)
+		c.handleCallback(ctx, update.CallbackQuery)
 	case update.Message != nil:
-		c.handleMessage(update.Message)
+		c.handleMessage(ctx, update.Message)
 	}
 }
 
-func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
+func (c *Router) handleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery) {
 	callbackPath, err := path.ParseCallback(callback.Data)
 	if err != nil {
 		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", callback.Data, err)
@@ -109,7 +109,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 
 	switch callbackPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCallback(callback, callbackPath)
+		// c.demoCommander.HandleCallback(callback, callbackPath)
 	case "user":
 		break
 	case "access":
@@ -155,7 +155,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "cinema":
 		break
 	case "logistic":
-		c.logisticCommander.HandleCallback(callback, callbackPath)
+		c.logisticCommander.HandleCallback(ctx, callback, callbackPath)
 	case "product":
 		break
 	case "education":
@@ -165,10 +165,9 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	}
 }
 
-func (c *Router) handleMessage(msg *tgbotapi.Message) {
+func (c *Router) handleMessage(ctx context.Context, msg *tgbotapi.Message) {
 	if !msg.IsCommand() {
-		c.showCommandFormat(msg)
-
+		c.showCommandFormat(ctx, msg)
 		return
 	}
 
@@ -180,7 +179,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 
 	switch commandPath.Domain {
 	case "demo":
-		c.demoCommander.HandleCommand(msg, commandPath)
+		// c.demoCommander.HandleCommand(msg, commandPath)
 	case "user":
 		break
 	case "access":
@@ -226,7 +225,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "cinema":
 		break
 	case "logistic":
-		c.logisticCommander.HandleCommand(msg, commandPath)
+		c.logisticCommander.HandleCommand(ctx, msg, commandPath)
 	case "product":
 		break
 	case "education":
@@ -236,7 +235,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	}
 }
 
-func (c *Router) showCommandFormat(inputMessage *tgbotapi.Message) {
+func (c *Router) showCommandFormat(ctx context.Context, inputMessage *tgbotapi.Message) {
 	outputMsg := tgbotapi.NewMessage(inputMessage.Chat.ID, "Command format: /{command}__{domain}__{subdomain}")
 
 	c.bot.Send(outputMsg)

@@ -51,24 +51,24 @@ func TestDummyGroupService_Update(t *testing.T) {
 	}{
 		{
 			"Update out of seq",
-			args{logistic.Group{Title: "Updated"}, uint64(10)},
+			args{logistic.Group{Name: "Updated"}, uint64(10)},
 			true,
 			length,
 			nil,
 		},
 		{
 			"Update in seq",
-			args{logistic.Group{Title: "Updated"}, uint64(5)},
+			args{logistic.Group{Name: "Updated"}, uint64(5)},
 			false,
 			length,
-			&logistic.Group{Id: 5, Title: "Updated"},
+			&logistic.Group{Id: 5, Name: "Updated"},
 		},
 		{
 			"Update first",
-			args{logistic.Group{Title: "Updated"}, uint64(1)},
+			args{logistic.Group{Name: "Updated"}, uint64(1)},
 			false,
 			length,
-			&logistic.Group{Id: 1, Title: "Updated"},
+			&logistic.Group{Id: 1, Name: "Updated"},
 		},
 	}
 	for _, tt := range tests {
@@ -101,8 +101,8 @@ func TestDummyGroupService_Create(t *testing.T) {
 	}
 	last_id := allgrp[s.Size()-1].Id
 	t.Run("add one", func(t *testing.T) {
-		expected := append(allgrp, logistic.Group{Id: last_id + 1, Title: "New item"})
-		if id, err := s.Create(logistic.Group{Title: "New item"}); err != nil {
+		expected := append(allgrp, logistic.Group{Id: last_id + 1, Name: "New item"})
+		if id, err := s.Create(logistic.Group{Name: "New item"}); err != nil {
 			t.Error(err)
 		} else {
 			if id != last_id+1 {
