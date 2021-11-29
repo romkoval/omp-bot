@@ -1,11 +1,12 @@
 package logistic
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"math"
 	"sort"
 
+	"github.com/ozonmp/omp-bot/internal/logger"
 	"github.com/ozonmp/omp-bot/internal/model/logistic"
 )
 
@@ -83,7 +84,7 @@ func (s *GroupStorage) getIndex(groupID uint64) (int, error) {
 	ind := sort.Search(size, func(ind int) bool {
 		return s.groupEntities[ind].Id >= groupID
 	})
-	log.Printf("found index %d by id:%d, len:%d", ind, groupID, size)
+	logger.DebugKV(context.Background(), "found index by id", "ind", ind, "groupID", groupID, "size", size)
 	if ind == size || groupID != s.groupEntities[ind].Id {
 		return 0, fmt.Errorf("group not found by id: %d", groupID)
 	}

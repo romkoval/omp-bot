@@ -2,11 +2,11 @@ package logistic
 
 import (
 	"context"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/logistic/group"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/logger"
 )
 
 type Commander interface {
@@ -31,7 +31,7 @@ func (c *LogisticCommander) HandleCallback(ctx context.Context, callback *tgbota
 	case "group":
 		c.groupCommander.HandleCallback(ctx, callback, callbackPath)
 	default:
-		log.Printf("LogisticCommander.HandleCallback: unknown group - %s", callbackPath.Subdomain)
+		logger.ErrorKV(ctx, "LogisticCommander.HandleCallback: unknown group", "group", callbackPath.Subdomain)
 	}
 }
 
@@ -40,6 +40,6 @@ func (c *LogisticCommander) HandleCommand(ctx context.Context, msg *tgbotapi.Mes
 	case "group":
 		c.groupCommander.HandleCommand(ctx, msg, commandPath)
 	default:
-		log.Printf("LogisticCommander.HandleCommand: unknown group - %s", commandPath.Subdomain)
+		logger.ErrorKV(ctx, "LogisticCommander.HandleCommand: unknown group", "group", commandPath.Subdomain)
 	}
 }

@@ -2,11 +2,11 @@ package router
 
 import (
 	"context"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/commands/logistic"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/logger"
 )
 
 type Commander interface {
@@ -19,7 +19,7 @@ type Router struct {
 	bot *tgbotapi.BotAPI
 
 	// demoCommander
-	demoCommander Commander
+	// demoCommander Commander
 	// user
 	// access
 	// buy
@@ -88,9 +88,11 @@ func NewRouter(
 func (c *Router) HandleUpdate(ctx context.Context, update tgbotapi.Update) {
 	defer func() {
 		if panicValue := recover(); panicValue != nil {
-			log.Printf("recovered from panic: %v", panicValue)
+			logger.ErrorKV(ctx, "recovered from panic", "value", panicValue)
 		}
 	}()
+
+	logger.DebugKV(ctx, "handleUpdate", "update", update)
 
 	switch {
 	case update.CallbackQuery != nil:
@@ -103,7 +105,7 @@ func (c *Router) HandleUpdate(ctx context.Context, update tgbotapi.Update) {
 func (c *Router) handleCallback(ctx context.Context, callback *tgbotapi.CallbackQuery) {
 	callbackPath, err := path.ParseCallback(callback.Data)
 	if err != nil {
-		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", callback.Data, err)
+		logger.ErrorKV(ctx, "Router.handleCallback: error parsing callback data", "data", callback.Data, "err", err)
 		return
 	}
 
@@ -161,7 +163,7 @@ func (c *Router) handleCallback(ctx context.Context, callback *tgbotapi.Callback
 	case "education":
 		break
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", callbackPath.Domain)
+		logger.WarnKV(ctx, "Router.handleCallback: unknown domain", "domain", callbackPath.Domain)
 	}
 }
 
@@ -173,10 +175,11 @@ func (c *Router) handleMessage(ctx context.Context, msg *tgbotapi.Message) {
 
 	commandPath, err := path.ParseCommand(msg.Command())
 	if err != nil {
-		log.Printf("Router.handleCallback: error parsing callback data `%s` - %v", msg.Command(), err)
+		logger.ErrorKV(ctx, "Router.handleCallback: error parsing callback data", "cmd", msg.Command(), "err", err)
 		return
 	}
 
+	logger.DebugKV(ctx, "handleMessage", "Domain", commandPath.Domain)
 	switch commandPath.Domain {
 	case "demo":
 		// c.demoCommander.HandleCommand(msg, commandPath)
@@ -231,7 +234,7 @@ func (c *Router) handleMessage(ctx context.Context, msg *tgbotapi.Message) {
 	case "education":
 		break
 	default:
-		log.Printf("Router.handleCallback: unknown domain - %s", commandPath.Domain)
+		logger.WarnKV(ctx, "Router.handleCallback: unknown domain", "domain", commandPath.Domain)
 	}
 }
 

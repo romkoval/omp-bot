@@ -3,10 +3,10 @@ package group
 import (
 	"context"
 	"encoding/json"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/logger"
 )
 
 type CallbackListData struct {
@@ -17,7 +17,7 @@ func (c *GroupCommander) CallbackList(ctx context.Context, callback *tgbotapi.Ca
 	parsedData := CallbackListData{}
 	err := json.Unmarshal([]byte(callbackPath.CallbackData), &parsedData)
 	if err != nil {
-		log.Printf("failed to handle callback event:%+v", callbackPath.CallbackData)
+		logger.ErrorKV(ctx, "failed to handle callback event", "event", callbackPath.CallbackData)
 		msg := tgbotapi.NewMessage(
 			callback.Message.Chat.ID,
 			"failed to handle callback message",

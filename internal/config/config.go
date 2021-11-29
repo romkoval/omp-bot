@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
@@ -94,9 +93,7 @@ func ReadConfigYML(filePath string) (err error) {
 		return err
 	}
 	defer func() {
-		if err := file.Close(); err != nil {
-			log.Printf("Unable to close file: %s", err)
-		}
+		err = file.Close()
 	}()
 
 	decoder := yaml.NewDecoder(file)

@@ -2,11 +2,11 @@ package botsrv
 
 import (
 	"context"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/router"
 	"github.com/ozonmp/omp-bot/internal/config"
+	"github.com/ozonmp/omp-bot/internal/logger"
 )
 
 type tlgbotSrv struct {
@@ -22,7 +22,7 @@ func NewTlgbotSrv(token string, cfg *config.Config) (TlgbotSrv, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	logger.InfoKV(context.Background(), "Authorized on account", "user_name", bot.Self.UserName)
 
 	bot.Debug = cfg.Project.Debug
 
@@ -44,11 +44,13 @@ func (b *tlgbotSrv) Start(ctx context.Context) error {
 	router := router.NewRouter(b.bot)
 
 	go func() {
-		select {
-		case update := <-updates:
-			router.HandleUpdate(ctx, update)
-		case <-ctx.Done():
-			return
+		for {
+			select {
+			case update := <-updates:
+				router.HandleUpdate(ctx, update)
+			case <-ctx.Done():
+				return
+			}
 		}
 	}()
 	return nil

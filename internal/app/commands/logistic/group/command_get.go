@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/logger"
 )
 
 func (c *GroupCommander) Get(ctx context.Context, inputMessage *tgbotapi.Message) error {
@@ -20,7 +21,7 @@ func (c *GroupCommander) Get(ctx context.Context, inputMessage *tgbotapi.Message
 	} else {
 		group, err := c.groupService.Describe(uint64(idx))
 		if err != nil {
-			log.Printf("fail to get group with idx %d: %v", idx, err)
+			logger.ErrorKV(ctx, "fail to get group", "idx", idx, "err", err)
 			answ = fmt.Sprintf("group not found by id: %d", idx)
 		} else {
 			answ = fmt.Sprintf("found group: %s", group.String())

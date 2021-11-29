@@ -2,10 +2,10 @@ package group
 
 import (
 	"context"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/ozonmp/omp-bot/internal/logger"
 	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
 )
 
@@ -44,10 +44,10 @@ func (c *GroupCommander) HandleCallback(ctx context.Context, callback *tgbotapi.
 	case "list":
 		err = c.CallbackList(ctx, callback, callbackPath)
 	default:
-		log.Printf("GroupCommander.HandleCallback: unknown callback name: %s", callbackPath.CallbackName)
+		logger.InfoKV(ctx, "GroupCommander.HandleCallback: unknown callback name", "name", callbackPath.CallbackName)
 	}
 	if err != nil {
-		log.Printf("failed to handle command with error:%s\n", err)
+		logger.ErrorKV(ctx, "failed to handle command", "err", err)
 	}
 }
 
@@ -70,6 +70,6 @@ func (c *GroupCommander) HandleCommand(ctx context.Context, msg *tgbotapi.Messag
 		err = c.Default(ctx, msg)
 	}
 	if err != nil {
-		log.Printf("failed to handle command with error:%s\n", err)
+		logger.ErrorKV(ctx, "failed to handle command", "err", err)
 	}
 }

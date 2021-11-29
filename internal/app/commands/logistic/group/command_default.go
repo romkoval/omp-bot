@@ -2,13 +2,13 @@ package group
 
 import (
 	"context"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/ozonmp/omp-bot/internal/logger"
 )
 
 func (c *GroupCommander) Default(ctx context.Context, inputMessage *tgbotapi.Message) error {
-	log.Printf("[%s] %s", inputMessage.From.UserName, inputMessage.Text)
+	logger.InfoKV(ctx, "userName", inputMessage.From.UserName, "text", inputMessage.Text)
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
