@@ -1,0 +1,37 @@
+project:
+  name: Ozon Code Platform Group Tlg BOT
+  debug: true
+  serviceName: lgc-group-bot
+  environment: development
+
+grpc-lgc-group-api:
+  host: localhost
+  port: 8082
+  timeout: 15 # Seconds
+
+grpc-lgc-group-facade:
+  host: localhost
+  port: 8082
+  timeout: 15 # Seconds
+
+metrics:
+  host: 0.0.0.0
+  port: 9100
+  path: /metrics
+
+jaeger:
+  service: "lgc-group-api"
+  host: "jaeger"
+  samplerType: "ratelimiting"
+  samplerParam: 10
+  port: ":6831"
+
+status:
+  host: 0.0.0.0
+  port: 8000
+  livenessPath: /live
+  readinessPath: /ready
+  versionPath: /version
+
+telemetry:
+  graylogPath: 127.0.0.1:12201

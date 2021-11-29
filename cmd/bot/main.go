@@ -1,41 +1,41 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
-	"github.com/ozonmp/omp-bot/internal/app/router"
+	"github.com/ozonmp/omp-bot/internal/botsrv"
+	"github.com/ozonmp/omp-bot/internal/config"
 )
 
 func main() {
 	godotenv.Load()
 
+	ctx, cancel := context.WithCancel(context.Background())
+
 	token := os.Getenv("TOKEN")
+	if err := config.ReadConfigYML("config.yml"); err != nil {
+		log.Printf("Failed init configuration: %s", err)
+	}
+	cfg := config.GetConfigInstance()
 
-	bot, err := tgbotapi.NewBotAPI(token)
+	botsrv, err := botsrv.NewTlgbotSrv(token, &cfg)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
+	botsrv.Start(ctx)
 
-	// Uncomment if you want debugging
-	// bot.Debug = true
-
-	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	u := tgbotapi.UpdateConfig{
-		Timeout: 10,
-	}
-
-	updates, err := bot.GetUpdatesChan(u)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	router := router.NewRouter(bot)
-
-	for update := range updates {
-		router.HandleUpdate(update)
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	select {
+	case <-sigs:
+		// logger.InfoKV(ctx, "signal.Notify", "sig", fmt.Sprintf("%v", v))
+		cancel()
+	case <-ctx.Done():
+		// logger.InfoKV(ctx, "ctx.Done", "done", fmt.Sprintf("%v", done))
 	}
 }
