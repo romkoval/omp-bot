@@ -17,7 +17,7 @@ func (c *GroupCommander) ListOffset(ctx context.Context, inputMessage *tgbotapi.
 	outputMsgText := "Here all the groups: \n\n"
 	nextOffset := 5
 
-	products, err := c.groupService.List(cursor, uint64(5))
+	products, err := c.groupService.List(ctx, cursor, uint64(5))
 	if err != nil {
 		outputMsgText = "Nothing found"
 		nextOffset = 0

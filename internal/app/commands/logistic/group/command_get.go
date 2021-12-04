@@ -19,7 +19,7 @@ func (c *GroupCommander) Get(ctx context.Context, inputMessage *tgbotapi.Message
 		log.Println("wrong args", args)
 		answ = "Please use format: /get__logistic__group groupId"
 	} else {
-		group, err := c.groupService.Describe(uint64(idx))
+		group, err := c.groupService.Describe(ctx, uint64(idx))
 		if err != nil {
 			logger.ErrorKV(ctx, "fail to get group", "idx", idx, "err", err)
 			answ = fmt.Sprintf("group not found by id: %d", idx)

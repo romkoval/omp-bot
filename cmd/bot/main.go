@@ -11,6 +11,9 @@ import (
 	"github.com/ozonmp/omp-bot/internal/botsrv"
 	"github.com/ozonmp/omp-bot/internal/config"
 	"github.com/ozonmp/omp-bot/internal/logger"
+	grpc_lgc_group_api "github.com/ozonmp/omp-bot/internal/pkg/lgc-group-api"
+	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -24,7 +27,17 @@ func main() {
 	}
 	cfg := config.GetConfigInstance()
 
-	botsrv, err := botsrv.NewTlgbotSrv(token, &cfg)
+	lgcGroupApiConn, err := grpc.DialContext(
+		ctx,
+		fmt.Sprintf("%s:%d", cfg.GrpcLgcGroupApi.Host, cfg.GrpcLgcGroupApi.Port),
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		logger.ErrorKV(ctx, "failed to create client", "err", err)
+	}
+	client_api := grpc_lgc_group_api.NewOmpGroupApiServiceClient(lgcGroupApiConn)
+	service := group.NewGrpcGroupService(client_api, client_api)
+	botsrv, err := botsrv.NewTlgbotSrv(token, service, &cfg)
 	if err != nil {
 		panic(err)
 	}

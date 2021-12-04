@@ -7,6 +7,7 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/commands/logistic"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"github.com/ozonmp/omp-bot/internal/logger"
+	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
 )
 
 type Commander interface {
@@ -50,6 +51,7 @@ type Router struct {
 
 func NewRouter(
 	bot *tgbotapi.BotAPI,
+	groupService group.Service,
 ) *Router {
 	return &Router{
 		// bot
@@ -79,7 +81,7 @@ func NewRouter(
 		// security
 		// cinema
 		// logistic
-		logisticCommander: logistic.NewLogisticCommander(bot),
+		logisticCommander: logistic.NewLogisticCommander(bot, groupService),
 		// product
 		// education
 	}

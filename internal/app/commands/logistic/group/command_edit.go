@@ -19,7 +19,7 @@ func (c *GroupCommander) Edit(ctx context.Context, inputMessage *tgbotapi.Messag
 	if groupId, name, err := parseEditGroupArgs(args); err != nil {
 		answ = "Please use format: /edit__logistic__group groupId Updated Group Title"
 	} else {
-		err := c.groupService.Update(groupId, logistic.Group{Name: name})
+		err := c.groupService.Update(ctx, groupId, logistic.Group{Name: name})
 
 		if err == nil {
 			answ = fmt.Sprintf("Group successfuly updated by id: %d", groupId)

@@ -29,12 +29,10 @@ type GroupCommander struct {
 	groupService group.Service
 }
 
-func NewGroupCommander(bot *tgbotapi.BotAPI) *GroupCommander {
-	groupService := group.NewDummyGroupService()
-
+func NewGroupCommander(bot *tgbotapi.BotAPI, service group.Service) *GroupCommander {
 	return &GroupCommander{
 		bot:          bot,
-		groupService: groupService,
+		groupService: service,
 	}
 }
 

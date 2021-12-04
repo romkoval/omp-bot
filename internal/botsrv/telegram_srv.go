@@ -7,17 +7,19 @@ import (
 	"github.com/ozonmp/omp-bot/internal/app/router"
 	"github.com/ozonmp/omp-bot/internal/config"
 	"github.com/ozonmp/omp-bot/internal/logger"
+	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
 )
 
 type tlgbotSrv struct {
-	bot *tgbotapi.BotAPI
+	bot    *tgbotapi.BotAPI
+	router *router.Router
 }
 
 type TlgbotSrv interface {
 	Start(context.Context) error
 }
 
-func NewTlgbotSrv(token string, cfg *config.Config) (TlgbotSrv, error) {
+func NewTlgbotSrv(token string, service group.Service, cfg *config.Config) (TlgbotSrv, error) {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		return nil, err
@@ -27,7 +29,8 @@ func NewTlgbotSrv(token string, cfg *config.Config) (TlgbotSrv, error) {
 	bot.Debug = cfg.Project.Debug
 
 	return &tlgbotSrv{
-		bot: bot,
+		bot:    bot,
+		router: router.NewRouter(bot, service),
 	}, nil
 }
 
@@ -41,13 +44,11 @@ func (b *tlgbotSrv) Start(ctx context.Context) error {
 		return err
 	}
 
-	router := router.NewRouter(b.bot)
-
 	go func() {
 		for {
 			select {
 			case update := <-updates:
-				router.HandleUpdate(ctx, update)
+				b.router.HandleUpdate(ctx, update)
 			case <-ctx.Done():
 				return
 			}

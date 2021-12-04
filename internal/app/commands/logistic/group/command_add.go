@@ -16,7 +16,7 @@ func (c *GroupCommander) Add(ctx context.Context, inputMessage *tgbotapi.Message
 	if len(args) == 0 {
 		answ = "Please use group name as an argument, e.g. /new__logistic__group New Group Title"
 	} else {
-		newid, err := c.groupService.Create(logistic.Group{Name: args})
+		newid, err := c.groupService.Create(ctx, logistic.Group{Name: args})
 
 		if err == nil {
 			answ = fmt.Sprintf("Group successfuly created with id: %d", newid)

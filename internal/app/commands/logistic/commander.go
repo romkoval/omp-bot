@@ -4,9 +4,10 @@ import (
 	"context"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/logistic/group"
+	group_app "github.com/ozonmp/omp-bot/internal/app/commands/logistic/group"
 	"github.com/ozonmp/omp-bot/internal/app/path"
 	"github.com/ozonmp/omp-bot/internal/logger"
+	"github.com/ozonmp/omp-bot/internal/service/logistic/group"
 )
 
 type Commander interface {
@@ -19,10 +20,10 @@ type LogisticCommander struct {
 	groupCommander Commander
 }
 
-func NewLogisticCommander(bot *tgbotapi.BotAPI) Commander {
+func NewLogisticCommander(bot *tgbotapi.BotAPI, service group.Service) Commander {
 	return &LogisticCommander{
 		bot:            bot,
-		groupCommander: group.NewGroupCommander(bot),
+		groupCommander: group_app.NewGroupCommander(bot, service),
 	}
 }
 

@@ -18,7 +18,7 @@ func (c *GroupCommander) Del(ctx context.Context, inputMessage *tgbotapi.Message
 		log.Println("wrong args", args)
 		answ = "Please use format: /delete__logistic__group groupId"
 	} else {
-		ok, err := c.groupService.Remove(uint64(idx))
+		ok, err := c.groupService.Remove(ctx, uint64(idx))
 		if ok {
 			answ = fmt.Sprintf("Group with id: %d successfuly removed", idx)
 		} else {
