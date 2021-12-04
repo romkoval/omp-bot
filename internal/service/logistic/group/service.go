@@ -97,7 +97,7 @@ func (s *grpcGroupService) Remove(ctx context.Context, groupID uint64) (bool, er
 
 func (s *grpcGroupService) Update(ctx context.Context, groupID uint64, grp logistic.Group) error {
 	_, err := s.groupApi.UpdateGroupV1(ctx, &grpc_api.UpdateGroupV1Request{
-		GroupId: grp.Id,
+		GroupId: groupID,
 		Name:    grp.Name,
 	})
 	if err != nil {
